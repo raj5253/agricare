@@ -73,7 +73,7 @@ export default function Home() {
               Complementing the Crop Recommendation Model is our  Crop Irrigation System,
               addressing water management in agriculture. The Water Requirement Model calculates optimal irrigation amounts based on crop type,
               weather conditions, and soil characteristics, promoting water conservation and efficient resource utilization.
-              Agricare's development relies on a robust foundation of materials and libraries for scalability and maintainability.
+              Agricare development relies on a robust foundation of materials and libraries for scalability and maintainability.
               The framework and libraries contribute diverse features, and the design and implementation phases showcase the project's effectiveness in providing accurate crop recommendations and irrigation guidance.
               In conclusion, Agricare is a comprehensive precision farming solution, empowering farmers with data-driven insights for optimizing practices and promoting sustainable and efficient farming.
               The project suggests potential avenues for future research and development in the field.
