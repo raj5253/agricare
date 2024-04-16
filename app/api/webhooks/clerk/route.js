@@ -1,7 +1,7 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
-import { WebhookEvent } from "@clerk/nextjs/server";
-// import { createUser, deleteUser, updateUser } from "@/lib/actions/user.actions";
+// import { WebhookEvent } from "@clerk/nextjs/server";
+import { createUser, updateUser } from "../../../../lib/actions/user.actions";
 import { clerkClient } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
@@ -55,43 +55,50 @@ export async function POST(req) {
   const { id } = evt.data;
   const eventType = evt.type;
 
-  //   if (eventType === "user.created") {
-  //     const { id, email_addresses, image_url, first_name, last_name } = evt.data;
+  if (eventType === "user.created") {
+    const { id, email_addresses, image_url, first_name, last_name } = evt.data;
 
-  //     const user = {
-  //       clerkId: id,
-  //       email: email_addresses[0].email_address,
-  //       firstName: first_name,
-  //       lastName: last_name,
-  //       photo: image_url,
-  //     };
+    const user = {
+      clerkId: id,
+      email: email_addresses[0].email_address,
+      firstName: first_name,
+      lastName: last_name,
+      photo: image_url,
+    };
 
-  //     const newUser = await createUser(user);
+    const newUser = await createUser(user);
 
-  //     if (newUser) {
-  //       await clerkClient.users.updateUserMetadata(id, {
-  //         publicMetadata: {
-  //           userId: newUser._id,
-  //         },
-  //       });
-  //     }
+    if (newUser) {
+      await clerkClient.users.updateUserMetadata(id, {
+        publicMetadata: {
+          userId: newUser._id,
+        },
+      });
+    }
+    // userId will store mongoId
 
-  //     return NextResponse.json({ message: "OK", user: newUser });
-  //   }
+    // mongodb stores the clerkId( id ) of user in form of clerkId
+    // clerk stores the mongoId( _id ) of user in form of userId
 
-  //   if (eventType === "user.updated") {
-  //     const { id, image_url, first_name, last_name } = evt.data;
+    // my code extract user from mongodb by userId of clerk.
+    // bc finding entry in mongo by findById() is faster.
 
-  //     const user = {
-  //       firstName: first_name,
-  //       lastName: last_name,
-  //       photo: image_url,
-  //     };
+    return NextResponse.json({ message: "OK", user: newUser });
+  }
 
-  //     const updatedUser = await updateUser(id, user);
+  if (eventType === "user.updated") {
+    const { id, image_url, first_name, last_name } = evt.data;
 
-  //     return NextResponse.json({ message: "OK", user: updatedUser });
-  //   }
+    const user = {
+      firstName: first_name,
+      lastName: last_name,
+      photo: image_url,
+    };
+
+    const updatedUser = await updateUser(id, user);
+
+    return NextResponse.json({ message: "OK", user: updatedUser });
+  }
 
   return new Response("", { status: 200 });
 }
