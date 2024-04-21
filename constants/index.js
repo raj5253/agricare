@@ -17,7 +17,7 @@ export const headerLinks = [
   },
   {
     label: "Yield",
-    route: "/dashboard/irrigation",
+    route: "/dashboard/yield",
   },
   {
     label: "Proposal",

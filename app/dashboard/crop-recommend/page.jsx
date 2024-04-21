@@ -21,7 +21,7 @@ export default function ProfileForm() {
     const [humidity, setHumidity] = useState('')
     const [temperature, setTemperature] = useState('')
     const [pH, setpH] = useState('')
-    const [crop, setCrop] = useState('Rice')
+    const [crop, setCrop] = useState('Rice')//initailly must be empty
 
 
     async function handleSubmit(e) {
@@ -37,12 +37,12 @@ export default function ProfileForm() {
             try {
                 const data = { N, P, K, temperature, humidity, pH, rainfall }
                 console.log(data);
-                const res = await axios.post("/py/crop-recommend", data);
-                if (res.status === 200) {
-                    //rahul 
-                    console.log(res.data)
-                    setCrop('Rice')
-                }
+                // const res = await axios.post("/py/crop-recommend", data);
+                // if (res.status === 200) {
+                //     //rahul 
+                //     console.log(res.data)
+                setCrop('Rice')
+                // }
             } catch (error) {
                 console.error("Error:", error);
             } finally {
@@ -98,20 +98,22 @@ export default function ProfileForm() {
                 </div>
             </section>
 
-            <section>
-                <p className="p-regular-14 mt-8">The best suitable crop to your land is  <span className="italic">{crop}</span></p>
-                <p className="p-regular-14 mt-2"> Want to monitor the crop ? <Link href={{
-                    pathname: "/dashboard/add-crop",
-                    query: { N, P, K, pH, crop }
-                }}><Button variant="linkp" className="font-bold"
-                // onClick={(e) => {
-                // e.preventDefault(); router.push({
-                //     pathname: "/dashboard/add-crop",
-                //     query: { N, P, K, pH, crop }
-                // });
-                // }}
-                > Add Crop</Button></Link> </p>
-            </section>
+            {crop &&
+                <section>
+                    <p className="p-regular-14 mt-8">The best suitable crop to your land is  <span className="italic">{crop}</span></p>
+                    <p className="p-regular-14 mt-2"> Want to monitor the crop ? <Link href={{
+                        pathname: "/dashboard/add-crop",
+                        query: { N, P, K, pH, crop }
+                    }}><Button variant="linkp" className="font-bold"
+                    // onClick={(e) => {
+                    // e.preventDefault(); router.push({
+                    //     pathname: "/dashboard/add-crop",
+                    //     query: { N, P, K, pH, crop }
+                    // });
+                    // }}
+                    > Add Crop</Button></Link> </p>
+                </section>
+            }
         </div >
     )
 }

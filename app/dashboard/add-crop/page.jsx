@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-// import axiosInstance from "@/axiosInstance"
+// import axios from "@/axiosInstance"
 import axios from "axios"
 
 import { Button } from "@/components/ui/button"
@@ -17,7 +17,8 @@ import {
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
-
+import { MapPin } from 'lucide-react';
+import geolocation from 'geolocation';
 
 export default function AddCropForm({ searchParams }) {
     const [loading, setLoading] = useState(false);
@@ -25,19 +26,34 @@ export default function AddCropForm({ searchParams }) {
     const [crop, setCrop] = useState(searchParams.crop)
     const [cropId, setHumidity] = useState('')
     const [area, setArea] = useState('')
-    const [P, setP] = useState(searchParams.P)
-    const [N, setN] = useState(searchParams.N)
-    const [K, setK] = useState(searchParams.K)
-    const [pH, setpH] = useState(searchParams.pH)
-    const [startDate, setStartDate] = useState('')
-    // const [endDate, setEndDate] = useState('')
+    const [longitude, setLongitude] = useState('')
+    const [latitude, setLatitude] = useState('')
+    const [startDate, setStartDate] = useState(null)
+    const [period, setPeriod] = useState('')
 
     const router = useRouter();
+
+    const handleSetLocation = (e) => {
+        e.preventDefault()
+        geolocation.getCurrentPosition(function (err, position) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            setLatitude(position.coords.latitude);
+            setLongitude(position.coords.longitude);
+        });
+    };
+
+    const handleSelectDate = (date) => {
+        const unixTimestamp = Math.floor(date.getTime() / 1000);
+        setStartDate(unixTimestamp);
+    };
 
     async function handleSubmit(e) {
         e.preventDefault();
 
-        if (!N || !K || !P || !crop || !cropId || !pH || !area || !startDate) {
+        if (!latitude || !longitude || !crop || !cropId || !area || !period || !startDate) {
             setErrMssg("Please Enter all fields correctly!")
             // console.log("call returuning")
             return;
@@ -45,25 +61,25 @@ export default function AddCropForm({ searchParams }) {
         else {
             setLoading(true);
             try {
-                const data = { crop, cropId, area, N, P, K, pH, startDate }
+                const data = { crop, cropId, area, longitude, latitude, period, startDate }
                 console.log(data);
-                // const res = await axios.post("/add-crop", data);
-                // if (res.status === 200) {
-                //     //rahul 
-                //     console.log(res.data)
-                toast("Crop is now added to your list", {
-                    description: `with start date: ${format(startDate, "PPP")}`, action: {
-                        label: "close",
-                        onClick: () => { }
-                    },
-                })
-                setTimeout(() => {
-                    router.push('/dashboard')
-                }, 3000)
-                // }
+                const res = await axios.post("http://localhost:3000/api/user/add-crop", data);
+                if (res.status === 200) {
+                    //raj
+                    console.log(res.data)
+                    toast("Crop is now added to your list", {
+                        description: `with start date: ${format(new Date(startDate * 1000), "PPP")}`, action: {
+                            label: "close",
+                            onClick: () => { }
+                        },
+                    })
+                    setTimeout(() => {
+                        router.push('/dashboard')
+                    }, 3000)
+                }
+                setLoading(false);
             } catch (error) {
                 console.error("Error:", error);
-            } finally {
                 setLoading(false);
             }
         }
@@ -75,20 +91,21 @@ export default function AddCropForm({ searchParams }) {
             <p className="ml-8 mt-1 mb-8 sm:mb-4 p-regular-14  text-muted-foreground">use our best crop recommendation model to find the best suitable crop for your land</p>
             <section >
                 <form onSubmit={handleSubmit} className="space-y-8 mx-auto md:max-w-md px-4">
+                    {/* location values - longitude & latitude */}
                     <section className="flex gap-3 justify-evenly ">
                         <div className="space-y-1">
-                            <label>Nitrogen(N)</label>
-                            <Input placeholder="Nitrogen" value={N} onChange={(e) => { setN(e.target.value); setErrMssg('') }} type="number" />
+                            <label>Latitude</label>
+                            <Input placeholder="Latitude" value={latitude} onChange={(e) => { setLatitude(e.target.value); setErrMssg('') }} type="number" />
                         </div>
                         <div className="space-y-1">
-                            <label>Phosphorous(P)</label>
-                            <Input placeholder="Phosphorous" value={P} onChange={(e) => { setP(e.target.value); setErrMssg('') }} type="number" />
+                            <label>Longitude</label>
+                            <Input placeholder="Longitude" value={longitude} onChange={(e) => { setLongitude(e.target.value); setErrMssg('') }} type="number" />
                         </div>
-                        <div className="space-y-1">
-                            <label>Potassium(K)</label>
-                            <Input placeholder="Potassium" value={K} onChange={(e) => { setK(e.target.value); setErrMssg('') }} type="number" />
+                        <div className="space-y-1 flex  items-center">
+                            <Button variant="linkp" onClick={handleSetLocation}> Current  <MapPin /></Button>
                         </div>
                     </section>
+                    {/* crop id and crop name */}
                     <section className="flex flex-1 gap-3 justify-evenly ">
                         <div className="space-y-1">
                             <label>Cultivation area</label>
@@ -99,16 +116,18 @@ export default function AddCropForm({ searchParams }) {
                             <Input placeholder="your choice" value={cropId} onChange={(e) => { setHumidity(e.target.value); setErrMssg('') }} type="text" />
                         </div>
                     </section>
+                    {/* crop and time period */}
                     <section className="flex flex-1 gap-3 justify-evenly ">
                         <div className="space-y-1">
-                            <label>pH of soil</label>
-                            <Input placeholder="0 - 14" value={pH} onChange={(e) => { setpH(e.target.value); setErrMssg('') }} type="number" />
+                            <label>crop</label>
+                            <Input placeholder="crop name" value={crop} onChange={(e) => { setCrop(e.target.value); setErrMssg('') }} type="text" />
                         </div>
                         <div className="space-y-1">
-                            <label>crop</label>
-                            <Input placeholder="crop in mm" value={crop} onChange={(e) => { setCrop(e.target.value); setErrMssg('') }} type="text" />
+                            <label>Time period</label>
+                            <Input placeholder="Number of days" value={period} onChange={(e) => { setPeriod(e.target.value); setErrMssg('') }} type="number" />
                         </div>
                     </section>
+                    {/* start date --calendar */}
                     <section className="flex flex-1 gap-3 justify-evenly ">
                         <div className="flex flex-col space-y-1">
                             <label>Start date</label>
@@ -122,7 +141,7 @@ export default function AddCropForm({ searchParams }) {
                                         )}
                                     >
                                         {startDate ? (
-                                            format(startDate, "PPP")
+                                            format(new Date(startDate * 1000), "PPP")
                                         ) : (
                                             <span>Pick a date</span>
                                         )}
@@ -132,12 +151,11 @@ export default function AddCropForm({ searchParams }) {
                                 <PopoverContent className="w-auto p-0" align="start">
                                     <Calendar
                                         mode="single"
-                                        selected={startDate}
-                                        onSelect={setStartDate}
-                                        disabled={(date) =>
-                                            date < new Date("2024-01-01")
-                                        }
+                                        selected={startDate ? new Date(startDate * 1000) : null}
+                                        onSelect={(date) => handleSelectDate(date)}
+                                        disabled={(date) => date < new Date("2024-01-01")}
                                         initialFocus
+                                        format="MMM d, yyyy"
                                     />
                                 </PopoverContent>
                             </Popover>
