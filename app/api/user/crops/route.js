@@ -45,8 +45,8 @@ export async function POST(request) {
       userId: mongoId,
       cropId: cropId,
       crop: crop,
-      startDate: startDate,
-      lastUpdate: startDate,
+      startDate: new Date(startDate * 1000),
+      lastUpdate: new Date(startDate * 1000),
       location: {
         latitude,
         longitude,
@@ -58,6 +58,33 @@ export async function POST(request) {
     const newCrop = await Crop.create(_crop);
 
     return NextResponse.json({ status: 200, mssg: "crop added successfully!" });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({
+      status: 500,
+      mssg: "Failed to add-crop. server side error",
+    });
+  }
+}
+
+export async function GET(request) {
+  try {
+    const { userId } = auth();
+
+    const user = await clerkClient.users.getUser(userId);
+    const mongoId = user.publicMetadata.userId;
+    console.log({ userId, mongoId });
+
+    const db = await connectToDatabase();
+    const mongoUser = await User.findById(mongoId);
+    if (!mongoUser) {
+      return NextResponse.json({ status: 401, mssg: "No user found" });
+    }
+    // console.log(mongoUser);
+
+    const crops = await Crop.find({ userId: mongoId });
+
+    return NextResponse.json({ status: 200, crops });
   } catch (error) {
     console.log(error);
     return NextResponse.json({

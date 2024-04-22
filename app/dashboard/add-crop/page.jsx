@@ -48,6 +48,7 @@ export default function AddCropForm({ searchParams }) {
     const handleSelectDate = (date) => {
         const unixTimestamp = Math.floor(date.getTime() / 1000);
         setStartDate(unixTimestamp);
+        console.log(unixTimestamp)
     };
 
     async function handleSubmit(e) {
@@ -63,7 +64,7 @@ export default function AddCropForm({ searchParams }) {
             try {
                 const data = { crop, cropId, area, longitude, latitude, period, startDate }
                 console.log(data);
-                const res = await axios.post("http://localhost:3000/api/user/add-crop", data);
+                const res = await axios.post("http://localhost:3000/api/user/crops", data);
                 if (res.status === 200) {
                     //raj
                     console.log(res.data)
