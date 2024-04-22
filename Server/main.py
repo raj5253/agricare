@@ -146,14 +146,15 @@ def crop_details(crop_id):
     try:
         """Fetches details of a particular crop."""
         crop = Crops.find_one({"_id": object_id})
-        
         # extract data from crop
         start_date = crop["startDate"]
-        last_update = crop["lastUpdate"]
+        flag = "lastIrrigation" in crop
+        
+        
         location = crop["location"]
         longitude = location["longitude"]
         latitude = location["latitude"]
-        print(last_update)
+        # print(last_update)
         
         # get previous day
         now = datetime.datetime.now()
@@ -161,26 +162,32 @@ def crop_details(crop_id):
         prev_day = now - one_day
         # print(prev_day)
         
+        diff = 0
+        if flag == True:
+            last_irrigation = crop["lastIrrigation"]
+            diff = (last_irrigation-start_date).days
+            start_date = last_irrigation + one_day
+    
         
         """ Calculating completion date """
         completion_date = start_date + datetime.timedelta(days=crop["period"])
         
         """ check if harvesting completed or not """
         
-        if(crop['harvested']):
+        if(crop['harvested']==True):
             data ={"$set" :  {"lastUpdate": completion_date, "water": []}}
             result = Crops.find_one_and_update({"_id": object_id}, data)
-            print(result['lastUpdate'])
+            # print(result['lastUpdate'])
             return jsonify({"message" : "true"}),200
         
-        elif (completion_date - now).days  <= 0:
-            data ={"$set" :  {"lastUpdate": completion_date, "water": [] ,"harvested" : True}}
+        elif (now - completion_date).days  >= 0:
+            data ={"$set" :  {"lastUpdate": completion_date,"lastIrrigation" : None, "water": [] ,"harvested" : True}}
             result = Crops.find_one_and_update({"_id": object_id}, data)
-            print(result['lastUpdate'])
+            # print(result['lastUpdate'])
             return jsonify({"message" : "true"}),200
         
         # """ check last updated date """
-        elif (now - last_update).days > 1: 
+        elif (now - start_date).days > 0: 
             """ get KC values """
             kc = get_KC(crop["crop"])
             # print(f"KC : {kc}")
@@ -197,14 +204,13 @@ def crop_details(crop_id):
             
             # calculate water requirement
             for i in range(len(et0)):
-                water.append(kc[i] * et0[i])
+                water.append(kc[i+diff] * et0[i])
                 
             """ update the database with new """
             data ={"$set" :  {"lastUpdate": prev_day, "water": water}}
             
             result = Crops.find_one_and_update({"_id": object_id}, data)
-            print(result['lastUpdate'])
-        
+            # print(result['lastUpdate'])
         return jsonify({"message" : "true"}),200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

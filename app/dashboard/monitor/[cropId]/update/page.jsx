@@ -24,6 +24,7 @@ const CropDetailPage = () => {
   const [lastIrrigation, setLastIrrigation] = useState();
   const [harvested, setHarvested] = useState("");
   const [errMssg, setErrMssg] = useState("");
+  const [percent, setPercent] = useState(0);
 
   useEffect(() => {
     const preFetch = async () => {
@@ -32,6 +33,12 @@ const CropDetailPage = () => {
         if (res.status === 200) {
           console.log(res.data);
           const _crop = res.data.crop;
+          const _startDate = new Date(_crop.startDate);
+          const now = new Date();
+
+          const diff = now.getDate() - _startDate.getDate();
+          console.log(diff);
+          setPercent((diff * 100) / _crop.period);
           setCrop(_crop);
           setHarvested(res.data.crop.harvested);
           setLastIrrigation(
@@ -59,14 +66,16 @@ const CropDetailPage = () => {
     console.log(unixTimestamp);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
     const data = { harvested, lastIrrigation: new Date(lastIrrigation * 1000) };
+    e.preventDefault();
     try {
       setIsLoading(true);
       const res = await axios.post(`/api/user/crops/${params.cropId}`, data);
       if (res.status === 200) {
         toast.success("Updated");
-        router.back();
+        router.replace(`/dashboard/monitor/${params.cropId}`);
+        router.refresh();
         console.log(res.data);
       }
     } catch (error) {
@@ -85,27 +94,30 @@ const CropDetailPage = () => {
       </p>
       <section>
         <form
-          onSubmit={handleSubmit}
+          onSubmit={(e) => handleSubmit(e)}
           className="space-y-8 mx-auto md:max-w-md px-4"
         >
           <section className="grid grid-rows-2 md:grid-rows-1 md:grid-cols-2 gap-3 ">
-            <div className="space-y-2">
-              <label>Harvested</label>
-              <select
-                value={harvested}
-                onChange={(e) => {
-                  setHarvested(e.target.value);
-                  setErrMssg("");
-                }}
-                className="select-input"
-              >
-                <option value="" className="text-muted">
-                  Select{" "}
-                </option>
-                <option value={true}>Yes</option>
-                <option value={false}>No</option>
-              </select>
-            </div>
+            {
+              <div className="space-y-2">
+                <label>Harvested</label>
+                <select
+                  disabled={percent < 90}
+                  value={harvested}
+                  onChange={(e) => {
+                    setHarvested(e.target.value);
+                    setErrMssg("");
+                  }}
+                  className="select-input"
+                >
+                  <option value="" className="text-muted">
+                    Select{" "}
+                  </option>
+                  <option value={true}>Yes</option>
+                  <option value={false}>No</option>
+                </select>
+              </div>
+            }
             <div className="flex flex-col space-y-2">
               <label>Last Irrigation</label>
               <Popover>

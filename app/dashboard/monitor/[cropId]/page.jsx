@@ -41,9 +41,7 @@ const CropDetailPage = () => {
   const clickhandler = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get(
-        `http://127.0.0.1:5000/api/crop_details/${params.cropId}/update`
-      );
+      const res = await axios.get(`/api/crop-details/${params.cropId}/update`);
       if (res.status === 200) {
         toast.success("Updated");
         console.log(res.data);
