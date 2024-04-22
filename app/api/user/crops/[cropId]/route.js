@@ -40,3 +40,20 @@ export async function GET(request, { params }) {
     });
   }
 }
+
+export async function POST(request, { params }) {
+  try {
+    const cropId = params.cropId;
+    const data = await request.json();
+    console.log(data);
+    await connectToDatabase();
+    const crop = await Crop.findByIdAndUpdate(cropId, { $set: data });
+    return NextResponse.json({ status: 200, crop });
+  } catch (error) {
+    console.log(error?.message);
+    return NextResponse.json({
+      status: 500,
+      mssg: "Failed to add-crop. server side error",
+    });
+  }
+}

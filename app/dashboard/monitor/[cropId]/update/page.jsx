@@ -5,17 +5,15 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
-import { Toaster } from "@/components/ui/sonner"
-import { Calendar } from "@/components/ui/calendar"
-import { format } from "date-fns"
-import { cn } from "@/lib/utils"
-import { CalendarIcon } from "lucide-react"
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { CalendarIcon } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 
 const CropDetailPage = () => {
   const [crop, setCrop] = useState(null);
@@ -23,53 +21,52 @@ const CropDetailPage = () => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [lastIrrigation, setLastIrrigation] = useState('')
-  const [harvested, setHarvested] = useState('')
-  const [errMssg, setErrMssg] = useState('')
-
-
+  const [lastIrrigation, setLastIrrigation] = useState();
+  const [harvested, setHarvested] = useState("");
+  const [errMssg, setErrMssg] = useState("");
 
   useEffect(() => {
     const preFetch = async () => {
       try {
         const res = await axios.get(`/api/user/crops/${params.cropId}`);
         if (res.status === 200) {
-          console.log(res.data)
+          console.log(res.data);
           const _crop = res.data.crop;
-          setCrop(_crop)
-          setHarvested(res.data.crop.harvested)
-          setLastIrrigation(Math.floor(new Date(_crop?.lastIrrigation).getTime() / 1000))
+          setCrop(_crop);
+          setHarvested(res.data.crop.harvested);
+          setLastIrrigation(
+            Math.floor(new Date(_crop?.lastIrrigation).getTime() / 1000)
+          );
         }
         // else {
         //   console.log("hiiiiiiii")
         //   router.push("/not-found");
         // }
       } catch (error) {
-        console.log(error)
-        console.log("hiiiiiiii")
+        console.log(error);
+        console.log("hiiiiiiii");
         router.replace("/not-found");
       }
-    }
+    };
     preFetch();
 
-    return () => { };
+    return () => {};
   }, [params.cropId, router]);
-
 
   const handleSelectDate = (date) => {
     const unixTimestamp = Math.floor(date.getTime() / 1000);
     setLastIrrigation(unixTimestamp);
-    console.log(unixTimestamp)
+    console.log(unixTimestamp);
   };
 
   const handleSubmit = async () => {
+    const data = { harvested, lastIrrigation: new Date(lastIrrigation * 1000) };
     try {
       setIsLoading(true);
-      const res = await axios.get(
-        `http://127.0.0.1:5000/api/crop_details/${params.cropId}/update`
-      );
+      const res = await axios.post(`/api/user/crops/${params.cropId}`, data);
       if (res.status === 200) {
         toast.success("Updated");
+        router.back();
         console.log(res.data);
       }
     } catch (error) {
@@ -102,7 +99,9 @@ const CropDetailPage = () => {
                 }}
                 className="select-input"
               >
-                <option value="" className="text-muted">Select </option>
+                <option value="" className="text-muted">
+                  Select{" "}
+                </option>
                 <option value={true}>Yes</option>
                 <option value={false}>No</option>
               </select>
@@ -129,7 +128,9 @@ const CropDetailPage = () => {
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={lastIrrigation ? new Date(lastIrrigation * 1000) : null}
+                    selected={
+                      lastIrrigation ? new Date(lastIrrigation * 1000) : null
+                    }
                     onSelect={(date) => handleSelectDate(date)}
                     disabled={(date) => date < new Date("2024-01-01")}
                     initialFocus

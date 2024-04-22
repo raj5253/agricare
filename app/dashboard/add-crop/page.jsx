@@ -66,7 +66,6 @@ export default function AddCropForm({ searchParams }) {
                 console.log(data);
                 const res = await axios.post("http://localhost:3000/api/user/crops", data);
                 if (res.status === 200) {
-                    //raj
                     console.log(res.data)
                     toast("Crop is now added to your list", {
                         description: `with start date: ${format(new Date(startDate * 1000), "PPP")}`, action: {

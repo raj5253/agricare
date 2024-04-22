@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Image from "next/image";
 
-
 const CropDetailPage = () => {
   const [crop, setCrop] = useState(null);
   const params = useParams(); //there are other hooks also: userSearchParams, useQueryParams
@@ -15,7 +14,7 @@ const CropDetailPage = () => {
   const [endDate, setEndDate] = useState();
   const [water, setWater] = useState(0);
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     const preFetch = async () => {
@@ -36,7 +35,7 @@ const CropDetailPage = () => {
     };
 
     preFetch();
-    return () => { };
+    return () => {};
   }, [params.cropId, isLoading]);
 
   const clickhandler = async () => {
@@ -97,10 +96,34 @@ const CropDetailPage = () => {
             <p className="text-gray-600 mb-1">
               Harvested: {crop.harvested ? "Yes" : "No"}
             </p>
-            <p className="text-gray-600 mb-1">Water Required : {crop?.harvested ? "N/A" : <>{water} m<sup>3</sup></>}</p>
+            <p className="text-gray-600 mb-1">
+              Water Required :{" "}
+              {crop?.harvested ? (
+                "N/A"
+              ) : (
+                <>
+                  {water} m<sup>3</sup>
+                </>
+              )}
+            </p>
+            <p className="text-gray-600 mb-1">
+              Last Irrigation:{" "}
+              {crop.lastIrrigation ? (
+                <>{new Date(crop.lastIrrigation).toLocaleDateString()}</>
+              ) : (
+                "N/A"
+              )}
+            </p>
             <div className="w-full flex flex-row items-center justify-center ">
               {" "}
-              <Button onClick={() => { router.push(`/dashboard/monitor/${params.cropId}/update`) }}> Update </Button>
+              <Button
+                onClick={() => {
+                  router.push(`/dashboard/monitor/${params.cropId}/update`);
+                }}
+              >
+                {" "}
+                Update{" "}
+              </Button>
             </div>
           </div>
         )}

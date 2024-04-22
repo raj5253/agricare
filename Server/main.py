@@ -70,12 +70,13 @@ sample_data = {
     "crop": "Rice",
     "startDate": datetime.datetime(2024, 2, 18, 18, 29, 54, 600000),
     "lastUpdate": datetime.datetime(2024, 2, 18, 18, 29, 54, 600000),
+    "lastIrrigation" : None ,
     "location": {"latitude": 23.831457, "longitude": 91.2867777},
     "area": 6000,
     "water": [0],
     "harvested": False,
     "__v": 0,
-    "total_day": 100,
+    "period": 100,
 }
 
 
@@ -160,12 +161,29 @@ def crop_details(crop_id):
         prev_day = now - one_day
         # print(prev_day)
         
-        """ get KC values """
-        kc = get_KC(crop["crop"])
-        # print(f"KC : {kc}")
         
-        """ check last updated date """
-        if (now - last_update).days > 1:
+        """ Calculating completion date """
+        completion_date = start_date + datetime.timedelta(days=crop["period"])
+        
+        """ check if harvesting completed or not """
+        
+        if(crop['harvested']):
+            data ={"$set" :  {"lastUpdate": completion_date, "water": []}}
+            result = Crops.find_one_and_update({"_id": object_id}, data)
+            print(result['lastUpdate'])
+            return jsonify({"message" : "true"}),200
+        
+        elif (completion_date - now).days  <= 0:
+            data ={"$set" :  {"lastUpdate": completion_date, "water": [] ,"harvested" : True}}
+            result = Crops.find_one_and_update({"_id": object_id}, data)
+            print(result['lastUpdate'])
+            return jsonify({"message" : "true"}),200
+        
+        # """ check last updated date """
+        elif (now - last_update).days > 1: 
+            """ get KC values """
+            kc = get_KC(crop["crop"])
+            # print(f"KC : {kc}")
             
             """ get et0 values """
             start_date = start_date.strftime("%Y-%m-%d")
@@ -193,4 +211,4 @@ def crop_details(crop_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host = "localhost",port= 5000,debug=True)

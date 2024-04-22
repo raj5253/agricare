@@ -20,14 +20,22 @@ export default function ProfileForm() {
   const [rainfall, setRainfall] = useState("");
   const [state, setState] = useState("");
   const [fertilizer, setFertilizer] = useState("");
-  const [area, setArea] = useState('')
+  const [area, setArea] = useState("");
 
   const [cropYield, setCopYield] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if (!crop || !season || !production || !rainfall || !state || !fertilizer || !area) {
+    if (
+      !crop ||
+      !season ||
+      !production ||
+      !rainfall ||
+      !state ||
+      !fertilizer ||
+      !area
+    ) {
       setErrMssg("Please Enter all fields correctly!");
       console.log(" call returuning");
       return;
@@ -44,10 +52,7 @@ export default function ProfileForm() {
           Area: Number(area),
         };
         console.log(data);
-        const res = await axios.post(
-          "http://127.0.0.1:5000/api/crop_yield",
-          data
-        );
+        const res = await axios.post("/api/yield", data);
         if (res.status === 200) {
           console.log(res.data);
           setCopYield(res.data?.prediction * 10);
@@ -186,7 +191,7 @@ export default function ProfileForm() {
                 type="number"
               />
             </div>
-            <div className="flex items-end justify-end" >
+            <div className="flex items-end justify-end">
               <Button
                 type="submit"
                 variant="default"
@@ -197,10 +202,11 @@ export default function ProfileForm() {
               </Button>
             </div>
           </section>
-
         </form>
         <div>
-          <p className="text-center text-xs text-destructive  mt-4">{errMssg}</p>
+          <p className="text-center text-xs text-destructive  mt-4">
+            {errMssg}
+          </p>
         </div>
       </section>
 

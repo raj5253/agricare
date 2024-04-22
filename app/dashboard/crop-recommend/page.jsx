@@ -43,11 +43,12 @@ export default function ProfileForm() {
         };
         console.log(data);
         const res = await axios.post(
-          "http://127.0.0.1:5000/api/crop_recommender",
+          "/api/crop-recommend",
           data
         );
         if (res.status === 200) {
           const data = res.data;
+          console.log(data);
           setCrop(data?.prediction);
         }
       } catch (error) {
