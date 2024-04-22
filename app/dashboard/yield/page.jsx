@@ -20,13 +20,14 @@ export default function ProfileForm() {
   const [rainfall, setRainfall] = useState("");
   const [state, setState] = useState("");
   const [fertilizer, setFertilizer] = useState("");
+  const [area, setArea] = useState('')
 
   const [cropYield, setCopYield] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if (!crop || !season || !production || !rainfall || !state || !fertilizer) {
+    if (!crop || !season || !production || !rainfall || !state || !fertilizer || !area) {
       setErrMssg("Please Enter all fields correctly!");
       console.log(" call returuning");
       return;
@@ -40,7 +41,7 @@ export default function ProfileForm() {
           Fertilizer: Number(fertilizer),
           State: state,
           Annual_Rainfall: Number(rainfall),
-          Area: 28755,
+          Area: Number(area),
         };
         console.log(data);
         const res = await axios.post(
@@ -162,7 +163,7 @@ export default function ProfileForm() {
             <div className="space-y-2">
               <label>Production</label>
               <Input
-                placeholder=""
+                placeholder="in Tonnes"
                 value={production}
                 onChange={(e) => {
                   setProduction(e.target.value);
@@ -172,17 +173,34 @@ export default function ProfileForm() {
               />
             </div>
           </section>
-          <Button
-            type="submit"
-            variant="default"
-            disabled={loading}
-            className="text-white"
-          >
-            Submit
-          </Button>
+          <section className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <label>Land Area</label>
+              <Input
+                placeholder="in m2"
+                value={area}
+                onChange={(e) => {
+                  setArea(e.target.value);
+                  setErrMssg("");
+                }}
+                type="number"
+              />
+            </div>
+            <div className="flex items-end justify-end" >
+              <Button
+                type="submit"
+                variant="default"
+                disabled={loading}
+                className="text-white mr-4"
+              >
+                Submit
+              </Button>
+            </div>
+          </section>
+
         </form>
         <div>
-          <p className="text-center text-xs text-destructive ">{errMssg}</p>
+          <p className="text-center text-xs text-destructive  mt-4">{errMssg}</p>
         </div>
       </section>
 
@@ -191,7 +209,7 @@ export default function ProfileForm() {
           <p className="p-regular-14 mt-8">
             The estimated yield of your land is :{" "}
             <span className="italic">{cropYield}</span>
-             {" %"}
+            {" %"}
           </p>
         </section>
       )}

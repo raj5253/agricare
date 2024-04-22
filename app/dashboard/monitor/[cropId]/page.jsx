@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import Image from "next/image";
+
 
 const CropDetailPage = () => {
   const [crop, setCrop] = useState(null);
@@ -12,6 +14,8 @@ const CropDetailPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [endDate, setEndDate] = useState();
   const [water, setWater] = useState(0);
+
+  const router = useRouter()
 
   useEffect(() => {
     const preFetch = async () => {
@@ -32,7 +36,7 @@ const CropDetailPage = () => {
     };
 
     preFetch();
-    return () => {};
+    return () => { };
   }, [params.cropId, isLoading]);
 
   const clickhandler = async () => {
@@ -60,9 +64,11 @@ const CropDetailPage = () => {
           <div className="bg-white shadow-md rounded-lg p-4 relative">
             <div className="absolute top-4 right-6">
               <button onClick={clickhandler} disabled={isLoading}>
-                <img
+                <Image
                   src={"/images/refresh.svg"}
                   className="h-6 w-6"
+                  width={24}
+                  height={24}
                   alt="refresh"
                 />
               </button>
@@ -94,7 +100,7 @@ const CropDetailPage = () => {
             <p className="text-gray-600 mb-1">Water Required : {crop?.harvested ? "N/A" : <>{water} m<sup>3</sup></>}</p>
             <div className="w-full flex flex-row items-center justify-center ">
               {" "}
-              <Button> Update </Button>
+              <Button onClick={() => { router.push(`/dashboard/monitor/${params.cropId}/update`) }}> Update </Button>
             </div>
           </div>
         )}

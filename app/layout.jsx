@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 // import { UserProvider } from "../context/userContext"
 import { ClerkProvider } from '@clerk/nextjs'
+import { Toaster } from "sonner";
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -14,7 +15,7 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning={true}>
-        <body suppressHydrationWarning={true} className={inter.className}>{children}</body>
+        <body suppressHydrationWarning={true} className={inter.className}>{children} <Toaster /></body>
       </html>
     </ClerkProvider>
   );
