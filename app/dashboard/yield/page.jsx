@@ -61,7 +61,7 @@ export default function ProfileForm() {
                         <div className="space-y-2">
                             <label>Crop</label>
                             {/* <Input placeholder="crop name" value={crop} onChange={(e) => { setCrop(e.target.value); setErrMssg('') }} type="text" /> */}
-                            <select value={crop} onChange={(e) => { setCrop(e.target.value); setErrMssg('') }} className="block p-2 border rounded-md focus:">
+                            <select value={crop} onChange={(e) => { setCrop(e.target.value); setErrMssg('') }} className="select-input">
                                 <option value="">Select Crop</option>
                                 {cropList.map((crop, index) => (
                                     <option key={index} value={crop}>
@@ -74,7 +74,7 @@ export default function ProfileForm() {
                         <div className="space-y-2">
                             <label>Season</label>
                             {/* <Input placeholder="season" value={season} onChange={(e) => { setSeason(e.target.value); setErrMssg('') }} type="text" /> */}
-                            <select value={season} onChange={(e) => { setSeason(e.target.value); setErrMssg('') }} className="block">
+                            <select value={season} onChange={(e) => { setSeason(e.target.value); setErrMssg('') }} className="select-input">
                                 <option value="">Select Season</option>
                                 {cropSeasons.map((season, index) => (
                                     <option key={index} value={season}>
@@ -84,12 +84,12 @@ export default function ProfileForm() {
                             </select>
                         </div>
                     </section>
-                    <section className="flex flex-1 gap-3 justify-evenly ">
+                    <section className="grid grid-cols-2 gap-3 ">
                         <div className="space-y-2">
                             <label>State</label>
                             {/* <Input placeholder="Indian state" value={state} onChange={(e) => { setState(e.target.value); setErrMssg('') }} type="number" /> */}
-                            <select placeholder="Indian state" value={state} onChange={(e) => { setState(e.target.value); setErrMssg('') }} >
-                                <option value="">Select state</option>
+                            <select placeholder="Indian state" value={state} onChange={(e) => { setState(e.target.value); setErrMssg('') }} className="select-input">
+                                <option value="" >Select state</option>
                                 {indianStates.map((istate, index) => (
                                     <option key={index} value={istate}>
                                         {istate}

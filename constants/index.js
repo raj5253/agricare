@@ -11,10 +11,10 @@ export const headerLinks = [
     label: "Best Crop",
     route: "/dashboard/crop-recommend",
   },
-  {
-    label: "Irrigation",
-    route: "/dashboard/irrigation",
-  },
+  // {
+  //   label: "Irrigation",
+  //   route: "/dashboard/irrigation",
+  // },
   {
     label: "Yield",
     route: "/dashboard/yield",

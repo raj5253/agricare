@@ -21,7 +21,7 @@ export default function ProfileForm() {
     const [humidity, setHumidity] = useState('')
     const [temperature, setTemperature] = useState('')
     const [pH, setpH] = useState('')
-    const [crop, setCrop] = useState('Rice')//initailly must be empty
+    const [crop, setCrop] = useState('')//initailly must be empty
 
 
     async function handleSubmit(e) {

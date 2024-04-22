@@ -8,7 +8,7 @@ const NotFound = () => {
       <div className="container mx-auto p-8">
         <div className="max-w-lg mx-auto text-center">
           <Image
-            src="/images/404.png"
+            src="/images/404.svg"
             alt="404 Error"
             width={300}
             height={300}
