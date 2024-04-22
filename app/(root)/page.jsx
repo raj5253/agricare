@@ -17,7 +17,7 @@ export default function Home() {
             </p>
             <p>Agricare revolutionizes the agricultural landscape by harnessing the power of cutting-edge Machine Learning (ML) technology. Our platform integrates sophisticated ML models to provide farmers with unparalleled insights and recommendations, enabling them to optimize their farming practices and maximize yields.</p>
             <Button size="lg" asChild className="button w-full sm:w-fit">
-              <Link href="#events">Monitor Crop</Link>
+              <Link href="/dashboard">Monitor Crop</Link>
             </Button>
           </div>
           <Image
