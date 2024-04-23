@@ -113,7 +113,7 @@ def crop_yield():
 def crop_recommend():
     try:
         data = request.get_json()
-        print(data)
+        # print(data)
         # get all data from post request as sample_data
         N = data["N"]
         P = data["P"]
@@ -127,7 +127,11 @@ def crop_recommend():
         prediction = XB.predict(
             np.array([[N, P, K, temperature, humidity, pH, rainfall]])
         )
-        response = jsonify({"prediction": str(prediction[0])})
+        label_mapping_filename = 'data/label_mapping.pkl'
+        with open(label_mapping_filename, 'rb') as label_mapping_file:
+            loaded_label_encoder = pickle.load(label_mapping_file)
+        
+        response = jsonify({"prediction": str(loaded_label_encoder.inverse_transform(prediction)[0])})
         """ decode the encoded label """
         return response
 
