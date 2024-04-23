@@ -4,7 +4,6 @@ import os
 from bson import ObjectId 
 # Import load_dotenv function from dotenv module
 from dotenv import load_dotenv
-import KC
 import datetime
 
 # Load environment variables from .env file into the running application

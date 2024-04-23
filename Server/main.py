@@ -9,8 +9,8 @@ import datetime
 import db
 from KC import get_KC
 from water_req import get_ET0
-
-# import xgboost as xgb
+import xgboost as xgb
+from sklearn.linear_model import LinearRegression
 
 
 # loading XGBoost Model
