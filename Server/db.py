@@ -13,11 +13,9 @@ def configure():
     
 # Get the value of the MONGO_PASSWORD environment variable
 configure()
-password = os.getenv('MONGO_PASSWORD')
+
 password1 = os.getenv('MONGO_PASSWORD1')
 
-
-uri = f"mongodb+srv://sahrahul181:{password}@cluster0.lw9xuhc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 uri1 = f"mongodb+srv://rajsatyam8532:{password1}@cluster0.sq3cdvo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 # Send a ping to confirm a successful connection

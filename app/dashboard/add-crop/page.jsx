@@ -64,7 +64,7 @@ export default function AddCropForm({ searchParams }) {
             try {
                 const data = { crop, cropId, area, longitude, latitude, period, startDate }
                 console.log(data);
-                const res = await axios.post("http://localhost:3000/api/user/crops", data);
+                const res = await axios.post("/api/user/crops", data);
                 if (res.status === 200) {
                     console.log(res.data)
                     toast("Crop is now added to your list", {
