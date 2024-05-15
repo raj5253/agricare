@@ -142,7 +142,7 @@ export default function AddCropForm({ searchParams }) {
 								type="number"
 							/>
 						</div>
-						<div className="space-y-1 flex  items-center">
+						<div className="space-y-1 flex  items-center mt-5">
 							<Button variant="linkp" onClick={handleSetLocation}>
 								{" "}
 								Current <MapPin />
