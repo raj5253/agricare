@@ -57,7 +57,7 @@ export async function POST(request) {
     };
     const newCrop = await Crop.create(_crop);
 
-    return NextResponse.json({ status: 200, mssg: "crop added successfully!" });
+    return NextResponse.json({ status: 200, mssg: "Crop added successfully!" });
   } catch (error) {
     console.log(error);
     return NextResponse.json({
