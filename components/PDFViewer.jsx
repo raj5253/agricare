@@ -22,7 +22,7 @@ const resizeObserverOptions = {};
 const maxWidth = 980;
 
 export default function Sample() {
-    const [file, setFile] = useState("./pdfs/Agricare4_update.pdf");
+    const [file, setFile] = useState("./pdfs/final-print-phase-2.pdf");
     const [numPages, setNumPages] = useState();
     const [containerRef, setContainerRef] = useState(null);
     const [containerWidth, setContainerWidth] = useState();
